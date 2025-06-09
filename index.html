@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wedding Mission Invitation</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Courier New', Courier, monospace;
+      background-color: black;
+      color: white;
+      text-align: center;
+    }
+    .screen {
+      padding: 60px 20px;
+      display: none;
+    }
+    .active {
+      display: block;
+      animation: fadeIn 2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    .map {
+      width: 60%;
+      margin: 20px auto;
+      border: 2px solid white;
+      padding: 10px;
+    }
+    button {
+      margin: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .button-accept { background-color: #4CAF50; color: white; border: none; }
+    .button-reject { background-color: #f44336; color: white; border: none; }
+    img {
+      max-width: 60%;
+      border-radius: 10px;
+      margin: 10px auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="screen1" class="screen active">
+    <h1>Wedding Mission</h1>
+    <p>Two people, from opposite ends of China, must find each other and complete this final mission.</p>
+    <p>Bride: 李禹睿 | Groom: 赵申昇</p>
+    <img src="china_map_with_planes.gif" alt="Map from Yunnan and Anhui to Champaign" class="map">
+    <button onclick="nextScreen()">Continue</button>
+  </div>
+
+  <div id="screen2" class="screen">
+    <h2>Mission Stage 1: Meet in Champaign (2022)</h2>
+    <img src="your_meeting_photo.jpg" alt="Meeting in Champaign">
+    <button onclick="nextScreen()">Continue</button>
+  </div>
+
+  <div id="screen3" class="screen">
+    <h2>Mission Stage 2: Travel, Laugh, and Grow Together</h2>
+    <img src="texas.jpg" alt="Texas Trip">
+    <img src="florida.jpg" alt="Florida Trip">
+    <img src="hawaii.jpg" alt="Hawaii Trip">
+    <img src="puerto_rico.jpg" alt="Puerto Rico Trip">
+    <img src="dc.jpg" alt="Washington DC Trip">
+    <button onclick="nextScreen()">Continue</button>
+  </div>
+
+  <div id="screen4" class="screen">
+    <h2>Final Stage: Wedding!</h2>
+    <p>🕓 Time: Aug 1st</p>
+    <p>📍 Location: Arboretum Park<br>
+    1008 S Lincoln Ave, Urbana, IL 61801, United States</p>
+    <p>💌 Will you accept the invitation to witness the completion of the final mission?</p>
+    <button class="button-accept" onclick="window.location.href='https://your-google-form-link'">Invitation Accepted</button>
+    <button class="button-reject" onclick="nextScreen()">Invitation Rejected</button>
+  </div>
+
+  <div id="screen5" class="screen">
+    <h3>Thank you for being with us all this way.</h3>
+    <p>No matter if you can come or not,<br> we hope to see you in the next mission!</p>
+  </div>
+
+  <script>
+    let currentScreen = 1;
+    function nextScreen() {
+      document.getElementById(`screen${currentScreen}`).classList.remove('active');
+      currentScreen++;
+      document.getElementById(`screen${currentScreen}`).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
