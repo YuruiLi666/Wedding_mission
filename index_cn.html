@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <meta charset="UTF-8">
+  <title>Wedding Mission</title>
+  <style>
+
+  #startPage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('Background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 1s ease;
+  }
+
+  #startPage.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #stage1 {
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+
+  #stage1.fade-in {
+    opacity: 1;
+  }
+    
+
+    @font-face {
+      font-family: 'Hanyi';
+      src: url('HanYiYuanLongHei60W-2.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: '字魂';
+      src: url('字魂正酷超级黑-DemiBold.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      margin: 0;
+      background-color: black;
+      color: white;
+      font-family: 'Hanyi', 'Courier New', monospace;
+      text-align: center;
+      padding: 100px;
+      font-size: 35px; /* ✅ 正文字体加大 */
+      letter-spacing: 1px;         /* ✅ 增加字母间距 */
+      line-height: 1; /* ✅ 阅读更舒适 */
+      margin: 6px 0;
+
+      background-image: url('Background.jpg');
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+
+
+    h1, h2, h3 {
+      font-family: '字魂', cursive, sans-serif; /* 使用你上传的字体 */
+      color: white;                                /* 标题文字颜色（可自定义） */
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    /* 分别调整标题大小 */
+    h1 {
+      font-size: 80px;
+    }
+    h2 {
+      font-size: 80px;
+    }
+    h3 {
+      font-size: 80px;
+    }
+
+    
+    .stage { display: none; }
+    .active { display: block; animation: fadeIn 1s ease-in; }
+    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+    img { max-width: 80%; margin: 20px auto; border-radius: 10px; }
+
+    button {
+      padding: 12px 28px;
+      font-size: 18px;
+      font-family: 'Mona', monospace;
+      background: linear-gradient(to right, #b93131, #e05050);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      letter-spacing: 1.2px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    button:hover {
+      transform: translateY(-2px) scale(1.04);
+      background: linear-gradient(to right, #d84242, #f06a6a);
+      box-shadow: 0 6px 16px rgba(255, 80, 80, 0.4);
+    }
+
+    button:active {
+      transform: scale(0.96);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(to right, #9e2a2a, #c23c3c);
+    }
+
+    .stage-center {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .backBtn {
+      padding: 10px 22px;
+      font-size: 16px;
+      background: linear-gradient(to right, #5e5e5e, #777);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Mona', monospace;
+    }
+
+    .backBtn:hover {
+      background: linear-gradient(to right, #707070, #888);
+      transform: scale(1.02);
+    }
+
+    .reject {
+      padding: 12px 28px;
+      font-size: 17px;
+      font-weight: bold;
+      background: linear-gradient(to right, #8b1c1c, #c62828);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Mona', monospace;
+    }
+
+    .reject:hover {
+      background: linear-gradient(to right, #b82525, #e43c3c);
+      transform: scale(1.03);
+      box-shadow: 0 0 10px rgba(255, 60, 60, 0.4);
+    }
+
+    .video-container {
+    max-width: 720px;
+    margin: 30px auto;
+    position: relative;
+    }
+    video {
+      width: 100%;
+      border-radius: 10px;
+    }
+    #subtitleBox {
+      margin-top: 15px;
+      font-size: 18px;
+      min-height: 24px;
+    }
+    #continueBtn {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #e58080;
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: none;
+    }
+    .photo-wall {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .photo-frame {
+      position: relative;
+      width: 320px;
+      height: 240px; /* 保持4:3比例 */
+      background-image: url('frame.png');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+    }
+
+    .photo-frame:hover {
+      transform: scale(1.05);
+      z-index: 2;
+    }
+
+    .photo-frame img {
+      width: 75%;
+      height: 75%;
+      object-fit: cover;
+      border-radius: 0px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      margin-top: 12px;
+      margin-left: 39px;
+    }
+
+    .us-map {
+      margin: 20px auto;
+      max-width: 90%;
+    }
+    .us-map img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    #photoOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      flex-direction: column;
+    }
+
+    .overlay-content img {
+      max-width: 60vw;
+      max-height: 50vw;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #fff;
+    }
+
+    .overlay-content button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #e58080;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .frame-animation-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 20px;
+    }
+
+    #frameAnimation {
+      width: 500%;
+      max-width: 1000px;
+      height: auto;
+      display: block;
+    }
+    .red-dot {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: red;
+      border-radius: 50%;
+      animation: blink 1s infinite;
+      opacity: 0; /* 初始隐藏 */
+      box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(1.5); }
+    }
+
+    #memoryBox {
+      display: none;
+      position: absolute;
+      background: white;              /* ✅ 白色背景 */
+      color: black;                   /* ✅ 黑色字体 */
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 400px;
+      z-index: 999;
+      font-family: monospace;
+      text-align: left;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      border: 2px solid #ddd;
+      line-height: 1.4;
+      font-family: 'Mona', sans-serif;
+      font-size: 16px;
+    }
+
+    #memoryBox strong {
+      font-size: 30px;          /* ✅ 地点名大一点 */
+      font-weight: bold;
+    }
+
+    #memoryBox em {
+      font-size: 24px;          /* ✅ 时间字体适中 */
+      font-style: italic;
+    }
+
+    .content-box {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 60px 40px;
+      /*background-color: rgba(0, 0, 0, 0.2); /* 可选：半透明底 */
+      border-radius: 20px;
+    }
+
+    #memoryOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      font-family: 'Mona', monospace;
+      font-size: 30px;
+      line-height: 1.8;
+      padding: 40px;
+      box-sizing: border-box;
+    }
+
+    #overlayText {
+      font-family: 'Mona', monospace;
+      font-size: 26px;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+    }
+
+    #overlayText strong {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    #overlayText em {
+      font-size: 28px;
+      font-style: italic;
+    }
+
+    #stage1 p {
+        margin: 4px 0;
+        line-height: 1.3;
+        }
+  </style>
+</head>
+
+
+<body>
+  <div id="startPage" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('Background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    cursor: pointer;
+  ">
+    <h1 style="
+      color: white;
+      font-family: '字魂', cursive, sans-serif;
+      font-size: 64px;
+      text-align: center;
+      letter-spacing: 2px;
+    ">请点击任意位置开始这段旅程。</h1>
+
+    <button onclick="window.location.href='index.html'" style="
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #555;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: 'Mona', sans-serif;
+        ">Switch to English</button>
+  </div>
+
+  <div class="stage active" id="stage1">
+    <div style="display: flex; flex-direction:  column; align-items: center;">
+      <h1>碟中谍：婚姻大事</h1>
+      <p  style="margin: 20px 0 4px 0;">任务发起者：命运</p>
+      <p  style="margin: 4px 0;">两位来自中国天涯海角的有缘人，必须找到彼此并完成这项最终任务。</p>
+      <p  style="margin: 12px 0;"><strong>新娘：李禹睿 </strong>&nbsp;&nbsp;&nbsp; <strong>新郎：赵申昇</strong></p>
+      
+      <!-- ✅ 照片 -->
+      <img src="cover.JPG" alt="Cover Photo" style="
+        width: 600px;
+        max-width: 90%;
+        margin-top: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(255,255,255,0.3);
+      ">
+
+      <!-- ✅ 按钮放在图片下，自动水平居中 -->
+      <button onclick="nextStage()" style="
+        margin-top: 30px;
+        font-size: 18px;
+        padding: 10px 30px;
+        background-color: #e58080;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      ">继续</button>
+     </div>
+    </div>
+  
+
+  <div class="stage" id="stage2">
+    <h2>任务第一阶段：海内存知己，天涯若比邻</h2>
+    <p>任务启动！两位搭档首先要找到彼此，并确认队友身份，才能继续接下来的旅程。</p>
+    <p>请观看视频了解故事发展（观看完毕即可继续）。</p>
+    <div class="video-container">
+      <video id="missionVideo" src="meeting_changed_picture_cliped.mp4" controls></video>
+      <div id="subtitleBox"></div>
+    </div>
+    <!-- 👇 新增跳过按钮 -->
+    <button id="skipBtn" onclick="skipVideo()">跳过此部分</button>
+    <button class="backBtn" onclick="prevStage()">返回</button>
+    <button id="continueBtn" onclick="nextStage()">继续</button>
+  </div>
+
+  <!-- Stage 3 Part 1: Group Photos -->
+<div class="stage" id="stage3">
+  <h2>任务第二阶段：山川作证，笑语随行</h2>
+  <p id="stage3Text">他们一起学习、工作，和众多共同的朋友相伴同行。</p>
+  <p id="stage3Text">在下面的照片中找到你自己！（点击可放大图片哦！）</p>
+ <div id="groupPhotos" class="photo-wall">
+  <div class="photo-frame"><img src="group1.jpg" alt="Group 1"onclick="enlargePhoto(this.src)"></div>
+  <div class="photo-frame"><img src="group2.jpg" alt="Group 2"onclick="enlargePhoto(this.src)"></div>
+  <div class="photo-frame"><img src="group3.jpg" alt="Group 3"onclick="enlargePhoto(this.src)"></div>
+  <div class="photo-frame"><img src="group4.JPG" alt="Group 4"onclick="enlargePhoto(this.src)"></div>
+  <div class="photo-frame"><img src="group5.jpg" alt="Group 5"onclick="enlargePhoto(this.src)"></div>
+  <div class="photo-frame"><img src="group7.jpg" alt="Group 7"onclick="enlargePhoto(this.src)"></div>
+  <div class="photo-frame"><img src="group8.jpg" alt="Group 8"onclick="enlargePhoto(this.src)"></div>
+  <div class="photo-frame"><img src="group9.jpg" alt="Group 9"onclick="enlargePhoto(this.src)"></div>
+</div>
+<p id="stage3Note">>如果你没有出现在这些照片里，婚礼现场等你来拍！</p>
+  <button class="backBtn" onclick="prevStage()">返回</button>
+  <button onclick="enterStage3b()">继续</button>
+</div>
+
+<!-- Stage 3 Part 2: Travel Map and Photos -->
+<div class="stage" id="stage3b">
+  <h2>任务第二阶段：山川作证，笑语随行</h2>
+  <p>他们还走遍许多美丽的地方，留下了无数难忘回忆。</p>
+  <p>（点击地图上的红点，探索他们的精彩瞬间！）</p>
+  <div class="us-map">
+  <!-- 帧动画显示区域 -->
+    <div class="frame-animation-container">
+      <canvas id="frameAnimation" width="900" height="500" style="background: transparent;"></canvas>
+    </div>
+  </div>
+  <button class="backBtn" onclick="returnToStage3()">返回</button>
+  <button onclick="goToStage(4)">继续</button>
+</div>
+
+  <div class="stage" id="stage4">
+    <h2>终极任务：执子之手，今朝成礼</h2>
+    <p>🕓 8月1日</p>
+    <p>📍 Arboretum Park, 1008 S Lincoln Ave, Urbana, IL</p>
+    <p>（如地图未出现，请调整浏览器窗口大小）</p>
+    <!-- ✅ 地图容器 -->
+    <div id="weddingMap" style="
+      height: 400px;
+      width: 100%;
+      max-width: 800px;
+      margin: 20px auto;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);"></div>
+    <p>你愿意接受邀请，见证这场终极任务吗？</p>
+    <button onclick="window.location.href='https://www.theknot.com/us/shensheng-zhao-and-yurui-li-aug-2025'">接受邀请</button>
+    <button class="reject" onclick="rejectInvitation()">拒绝邀请</button>
+    <button class="backBtn" onclick="prevStage()">返回</button>
+  </div>
+
+  <div class="stage" id="stage5">
+    <h3>感谢你一路陪伴至此。</h3>
+    <p>无论如何，期待在下一次任务中再见！</p>
+    <button class="backBtn" onclick="prevStage()">返回</button>
+  </div>
+
+  <audio id="bgMusic" loop>
+    <source src="Background_music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div id="photoOverlay" style="display: none;">
+    <div class="overlay-content">
+      <img id="enlargedPhoto" src="" alt="Enlarged photo">
+      <button onclick="closeOverlay()">Back</button>
+    </div>
+  </div>
+
+  <div id="memoryBox">
+    <img id="memoryImage" src="" alt="Memory Photo" style="width: 100%; border-radius: 8px; margin-bottom: 10px;">
+    <div id="memoryText" style="font-size: 14px;"></div>
+  </div>
+
+  <svg id="memoryLine" width="100%" height="100%" style="position: absolute; top: 0; left: 0; pointer-events: none; z-index: 998;">
+    <line x1="0" y1="0" x2="0" y2="0" stroke="white" stroke-width="2" id="memoryConnector"/>
+  </svg>
+
+  <div id="memoryOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; font-family: monospace;">
+    <img id="overlayImage" src="" style="max-width: 80vw; max-height: 60vh; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 0 20px #fff;">
+    <div id="overlayText" style="font-size: 18px; margin-bottom: 20px;"></div>
+    <button onclick="closeMemoryOverlay()" style="padding: 10px 20px; font-size: 16px; background-color: #e58080; color: white; border: none; cursor: pointer;">Back</button>
+  </div>
+
+  <audio id="weddingMusic" loop>
+    <source src="wedding_song.ogg" type="audio/ogg">
+    Your browser does not support the audio element.
+  </audio>
+
+
+
+  <script>
+    let activeMemoryIndex = null;
+    let current = 1;
+    const bgMusic = document.getElementById("bgMusic");
+
+    function nextStage() {
+      document.getElementById(`stage${current}`).classList.remove('active');
+      // 如果进入的是 stage4，强制刷新地图尺寸
+      if (current === 4 ) {
+        initWeddingMap();  // 👈 加上这个
+        setTimeout(() => {
+          weddingMapInstance.invalidateSize();
+          weddingMapInstance.setView([40.095389, -88.216862], 16); // 强制定位
+        }, 300); // 稍微延迟一点点更保险
+      }
+
+      current++;
+
+      const bgMusic = document.getElementById("bgMusic");
+      const weddingMusic = document.getElementById("weddingMusic");
+
+      if (current === 4) {
+        // 停止背景音乐
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+
+        // 只播放一次婚礼音乐
+        if (weddingMusic.paused) {
+          weddingMusic.play().catch(err => {
+            console.warn("Wedding music autoplay may be blocked by browser");
+          });
+        }
+      }
+
+      document.getElementById(`stage${current}`).classList.add('active');
+    }
+
+    const video = document.getElementById("missionVideo");
+    const subtitleBox = document.getElementById("subtitleBox");
+    const continueBtn = document.getElementById("continueBtn");
+    const skipBtn = document.getElementById("skipBtn");
+
+    // 初始隐藏 Continue 按钮
+    continueBtn.style.display = "none";
+
+    const subtitles = [
+      { time: 0, text: "红线早牵，两人未识，命运的篇章却已悄然铺陈……" },
+      { time: 5, text: "一个来自彩云之南，一个来自长江之畔……" },
+      { time: 10, text: "虽相隔千山万水，却终将因命运而相遇……" },
+      { time: 15, text: "命运的召唤悄然响起，他们不约而同踏上了远赴重洋的征程……" },
+      { time: 22, text: "他们的旅途，最终在香槟交汇……" },
+      { time: 27, text: "他们跋涉万里，穿越半个地球，终于完成了这场任务的第一章……" },
+      { time: 35, text: "那是2021年9月19日，中秋佳节，他们命中注定地相遇了。" }
+    ];
+
+    video.addEventListener("timeupdate", () => {
+      let t = video.currentTime;
+      let sub = subtitles.filter(s => t >= s.time).pop();
+      subtitleBox.innerText = sub ? sub.text : "";
+    });
+
+    video.addEventListener("ended", () => {
+      continueBtn.style.display = "inline-block";
+      skipBtn.style.display = "none";
+    });
+
+    function prevStage() {
+      if (current === 4) {
+        document.getElementById('stage4').classList.remove('active');
+        document.getElementById('stage3b').classList.add('active');
+        current = 3;
+      } else if (current > 1) {
+        document.getElementById(`stage${current}`).classList.remove('active');
+        current--;
+        document.getElementById(`stage${current}`).classList.add('active');
+      }
+    }
+
+
+    function skipVideo() {
+      video.pause();  // 暂停视频
+      continueBtn.style.display = "inline-block";
+      skipBtn.style.display = "none";
+      subtitleBox.innerText = "";
+    }
+
+    let stage3bAnimationPlayed = false;
+    function enterStage3b() {
+      document.getElementById(`stage${current}`).classList.remove('active');
+      current++;
+      document.getElementById('stage3b').classList.add('active');
+
+      if (!stage3bAnimationPlayed) {
+        playStage3bAnimationOnce();
+        stage3bAnimationPlayed = true;
+      } else {
+        // ✅ 已经播放过动画，重新渲染红点
+        setTimeout(() => {
+          renderRedDots(); // 给它一点延迟确保 canvas 渲染完成
+        }, 100);
+      }
+    }
+
+
+    function returnToStage3() {
+      document.getElementById('stage3b').classList.remove('active');
+      document.getElementById('stage3').classList.add('active');
+      current = 3;
+
+      // ✅ 回到 Stage 3b 时重新渲染红点位置
+      setTimeout(() => {
+        renderRedDots();
+      }, 50); // 加一点延迟，等 DOM 完成切换
+    }
+
+
+    function enlargePhoto(src) {
+      document.getElementById("enlargedPhoto").src = src;
+      document.getElementById("photoOverlay").style.display = "flex";
+    }
+
+    function closeOverlay() {
+      document.getElementById("photoOverlay").style.display = "none";
+    }
+
+
+  // === Stage 3b 帧动画逻辑 ===
+    function playStage3bAnimationOnce() {
+      const canvas = document.getElementById("frameAnimation");
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      const totalFrames = 57;
+      const animationFrames = [];
+      let currentFrameIndex = 0;
+      let animationLoaded = 0;
+
+      // 加载图片
+      for (let i = 0; i < totalFrames; i++) {
+        const img = new Image();
+        img.src = `frames_extracted/frame_${String(i).padStart(4, '0')}.png`;
+        img.onload = () => {
+          animationLoaded++;
+          if (animationLoaded === totalFrames) {
+            requestAnimationFrame(draw);
+          }
+        };
+        animationFrames.push(img);
+      }
+
+      function draw() {
+        if (currentFrameIndex >= totalFrames) {
+          renderRedDots(); // ✅ 动画完成后添加红点
+          return;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(animationFrames[currentFrameIndex], 0, 0, canvas.width, canvas.height);
+        currentFrameIndex +=2;
+        requestAnimationFrame(draw);
+      }
+
+    }
+    function goToStage(target) {
+      document.getElementById(`stage3b`).classList.remove('active');
+      current = target - 1; // 保证调用 nextStage 后 current = 4
+      nextStage();
+    }
+
+    function playMusic() {
+      const bgMusic = document.getElementById("bgMusic");
+      if (bgMusic.paused) {
+        bgMusic.play().then(() => {
+          document.getElementById("musicBtn").innerText = "🎵 Playing";
+        }).catch(err => {
+          alert("Your browser blocked autoplay. Please interact with the page first.");
+        });
+      } else {
+        bgMusic.pause();
+        document.getElementById("musicBtn").innerText = "🎵 Music";
+      }
+    }
+    // 等地图动画完成后执行
+    window.addEventListener('load', () => {
+      // 假设地图展开动画用时 3000 毫秒
+      setTimeout(() => {
+        const redDots = document.querySelectorAll('.red-dot');
+        redDots.forEach(dot => {
+          dot.style.opacity = 1;
+          dot.style.pointerEvents = 'auto'; // 恢复点击
+        });
+      }, 10000); // 动画持续时间
+    });
+    function showRedDots() {
+      const redDots = document.querySelectorAll('.red-dot');
+      redDots.forEach(dot => {
+        dot.style.opacity = 1;
+        dot.style.pointerEvents = 'auto';
+      });
+  }
+  const memoryData = [
+    {
+      image: "just_two/texas.jpg",
+      location: "德克萨斯州",
+      time: "2021年 冬",
+      description: "第一次旅程从一场意外开始——禹睿订错了时间，申昇却为她改了行程。他们并肩坐上飞机，在云端，命运为他们安排了第一次深入的交谈",
+      dotX: 420, dotY: 300, side: "left"
+    },
+    {
+        image: "just_two/hawaii.jpg",
+        location: "夏威夷",
+        time: "2023年 冬",
+        description: "火山之巅的白昼，海浪之间的瞬间——我们在浮潜时被摄影师定格，那一晚，我们枕着海浪声，在火山脚下入梦。",
+        dotX: 365, dotY: 340, side: "left"
+    },
+    {
+        image: "just_two/florida.jpg",
+        location: "佛罗里达",
+        time: "2022年 冬",
+        description: "迪士尼的烟花很美，海牛很大，鳄鱼很懒，但病毒也很凶。原本取干龟岛国家公园的计划也因为大量古巴偷渡者的意外登录而取消。但旅途仍然愉快，困难与照顾也让心更加贴近。",
+        dotX: 610, dotY: 345, side: "right"
+    },
+    {
+        image: "just_two/great_smoky_mountains.jpg",
+        location: "大烟山国家公园",
+        time: "2023年 夏",
+        description: "为了观赏同步闪烁的萤火冲，我们出发前往山中，却在半路遭遇爆胎，在周六信号时断时续的山区寻找修车店简直难过登天！但最终我们还是在午夜前感到，当身边星星点点的亮光同时亮起，仍然会以为是星辰落入人间。幸运虽迟但到，并未辜负一路的坚持。",
+        dotX: 575, dotY: 250, side: "right"
+    },
+    {
+        image: "just_two/porcupine_mountains.jpg",
+        location: "北密 野猪山",
+        time: "2022年 秋",
+        description: "当秋天在山中蔓延，会是什么光景？禹睿想知道。申昇记住了， 于是在2022年的秋天，一路向北，与禹睿共赴一场秋的盛宴。车程漫长、身心疲惫，但当那满山秋色映入眼帘，所有辛苦都化作一句：“你还记得。",
+        dotX: 510, dotY: 140, side: "right"
+    },
+    {
+        image: "just_two/washington_dc.jpg",
+        location: "华盛顿 DC",
+        time: "2024年 秋",
+        description: "虽然这段旅程禹睿经历了忘记最后一秒才发现忘记订机票的糗事，但不影响我们吃到了最美味的蓝蟹，受到了王韫知最热情的款待。每次旅程似乎都有波折，但和对的人在一起其他都无关紧要。",
+        dotX: 620, dotY: 210, side: "right"
+    },
+    {
+        image: "just_two/puerto_rico.jpg",
+        location: "波多黎各",
+        time: "2024年 冬",
+        description: "这次旅程中，申昇突然病倒，换禹睿来照顾他。但即便如此，他们依旧拥有温暖的回忆。申昇学会了拍照，她笑说自己胖了，他却把她拍的更美了。",
+        dotX: 640, dotY: 400, side: "right",
+        customOffsetY: -120   // ✅ 自定义上移幅度（越负越高）
+    }
+  ];
+  
+  function showMemory(index) {
+    const data = memoryData[index];
+    const box = document.getElementById("memoryBox");
+    const line = document.getElementById("memoryConnector");
+    const svg = document.getElementById("memoryLine");
+
+    if (activeMemoryIndex === index) {
+      box.style.display = "none";
+      line.setAttribute("x1", 0);
+      line.setAttribute("y1", 0);
+      line.setAttribute("x2", 0);
+      line.setAttribute("y2", 0);
+      activeMemoryIndex = null;
+      return;
+    }
+    activeMemoryIndex = index;
+
+    // 设置图片和文字
+    document.getElementById("memoryImage").src = data.image;
+    document.getElementById("memoryText").innerHTML = `
+      <strong>${data.location}</strong><br>
+      <em>${data.time}</em><br>
+      <span style="font-size: 22px; display: inline-block; margin-top: 6px;">${data.description}</span>`;
+
+    const canvas = document.getElementById("frameAnimation");
+    const canvasRect = canvas.getBoundingClientRect();
+    const svgRect = svg.getBoundingClientRect();
+
+    // 起点位置：canvas 上红点的中心
+    const x1 = canvasRect.left + (data.dotX / 900) * canvasRect.width;
+    const y1 = canvasRect.top + (data.dotY / 500) * canvasRect.height;
+
+    // 对话框方向及偏移
+    // ✅ 仅对左侧使用更大的偏移值
+    const offsetX = data.side === "left" ? 650 : 400;
+    const offsetY = data.customOffsetY !== undefined ? data.customOffsetY : -80;
+
+    const container = document.querySelector(".frame-animation-container");
+    const containerRect = container.getBoundingClientRect();
+
+    const boxX = (data.side === "left" ? x1 - offsetX : x1 + offsetX) - containerRect.left;
+    const boxY = y1 + offsetY - containerRect.top ;
+
+    // 显示对话框
+    box.style.display = "block";
+    box.style.left = `${boxX}px`;
+    box.style.top = `${boxY}px`;
+
+    // 设置 SVG 尺寸
+    svg.setAttribute("width", window.innerWidth);
+    svg.setAttribute("height", window.innerHeight);
+
+    // 红线连接点坐标（在 SVG 坐标系统中）
+    const dotOffset = 6;
+    const lineX1 = x1 - svgRect.left;
+    const lineY1 = y1 - svgRect.top;
+    const lineX2 = boxX + (data.side === "left" ? box.offsetWidth : 0) - svgRect.left;
+    const lineY2 = lineY1;
+
+    line.setAttribute("x1", lineX1);
+    line.setAttribute("y1", lineY1);
+    line.setAttribute("x2", lineX2);
+    line.setAttribute("y2", lineY2);
+    line.setAttribute("stroke", "white");
+
+    // 添加对话框上的红点（先移除旧的）
+    const oldDot = box.querySelector(".red-dot");
+    if (oldDot) oldDot.remove();
+  }
+
+  const redDotCoords = [
+    { x: 420, y: 300 },  // Texas
+    { x: 365, y: 340 },  // Hawaii
+    { x: 610, y: 345 },  // Florida
+    { x: 575, y: 250 },  // Great Smoky Mountains
+    { x: 510, y: 140 },  // Porcupine Mountains
+    { x: 620, y: 210 },  // Washington DC
+    { x: 640, y: 400 }   // Puerto Rico
+  ];
+  function renderRedDots() {
+    const container = document.querySelector(".frame-animation-container");
+    const canvas = document.getElementById("frameAnimation");
+    const canvasRect = canvas.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    // 移除旧红点
+    container.querySelectorAll(".red-dot").forEach(dot => dot.remove());
+
+    redDotCoords.forEach((coord, i) => {
+      const dot = document.createElement("div");
+      dot.className = "red-dot";
+
+      // 红点真实屏幕位置 = canvas 实际位置 + 坐标比例 × canvas尺寸
+      const left = canvasRect.left + (coord.x / 900) * canvasRect.width;
+      const top = canvasRect.top + (coord.y / 500) * canvasRect.height;
+
+      // 相对于 container 的位置（因为 red-dot 是添加到 container 下的）
+      const offsetLeft = left - containerRect.left;
+      const offsetTop = top - containerRect.top;
+
+      dot.style.left = `${offsetLeft}px`;
+      dot.style.top = `${offsetTop}px`;
+
+      dot.style.opacity = "1";
+      dot.style.pointerEvents = "auto";
+      //dot.style.animationDelay = `${i * 0.2}s`;
+      dot.onclick = () => showMemory(i);
+      container.appendChild(dot);
+    });
+  }
+
+  // 当窗口尺寸变化时，重新渲染红点
+  window.addEventListener("resize", () => {
+    // 只有在 Stage 3b 可见时才重绘红点
+    const stage3b = document.getElementById("stage3b");
+    if (stage3b.classList.contains("active")) {
+      renderRedDots();
+    }
+  });
+  // 点击页面其他地方关闭 memoryBox
+  document.addEventListener("click", function (event) {
+    const box = document.getElementById("memoryBox");
+    const line = document.getElementById("memoryConnector");
+
+    const isClickInsideBox = box.contains(event.target);
+    const isClickOnRedDot = event.target.classList.contains("red-dot");
+
+    // 如果点击的不是对话框，也不是红点，则关闭
+    if (box.style.display === "block" && !isClickInsideBox && !isClickOnRedDot) {
+      box.style.display = "none";
+      line.setAttribute("x1", 0);
+      line.setAttribute("y1", 0);
+      line.setAttribute("x2", 0);
+      line.setAttribute("y2", 0);
+      activeMemoryIndex = null;
+    }
+  });
+
+  // 点击 memoryBox → 打开全屏放大对话框
+  document.getElementById("memoryBox").addEventListener("click", function () {
+    if (activeMemoryIndex === null) return;
+
+    const data = memoryData[activeMemoryIndex];
+    document.getElementById("overlayImage").src = data.image;
+    document.getElementById("overlayText").innerHTML = `<strong>${data.location}</strong><br><em>${data.time}</em><br>${data.description}`;
+
+    // 显示 overlay
+    document.getElementById("memoryOverlay").style.display = "flex";
+  });
+
+  // 关闭 overlay，回到地图 memoryBox
+  function closeMemoryOverlay() {
+    document.getElementById("memoryOverlay").style.display = "none";
+  }
+  // ✅ 页面加载时，确保 overlay 都是隐藏的（Live Server 刷新缓存问题）
+  window.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("memoryOverlay").style.display = "none";
+    document.getElementById("photoOverlay").style.display = "none";
+    document.getElementById("memoryBox").style.display = "none";
+
+    // 修正 SVG 线条（防止白线残留）
+    const line = document.getElementById("memoryConnector");
+    line.setAttribute("x1", 0);
+    line.setAttribute("y1", 0);
+    line.setAttribute("x2", 0);
+    line.setAttribute("y2", 0);
+
+    // ✅ 强制跳回第一页 stage1
+    const stages = document.querySelectorAll(".stage");
+    stages.forEach(stage => stage.classList.remove("active"));
+    document.getElementById("stage1").classList.add("active");
+    current = 1;
+  });
+// 使用 ResizeObserver 监听 canvas 尺寸变化（适配浏览器）
+  if ('ResizeObserver' in window) {
+    const canvas = document.getElementById("frameAnimation");
+    const observer = new ResizeObserver(() => {
+      const stage3b = document.getElementById("stage3b");
+      if (stage3b.classList.contains("active")) {
+        renderRedDots();  // ✅ 尺寸变化且在 Stage3b 时刷新红点位置
+      }
+    });
+
+    observer.observe(canvas);  // 开始监听 canvas 尺寸
+  }
+
+  // 自动播放背景音乐（在用户第一次点击页面后）
+  let hasInteracted = false;
+  window.addEventListener('click', () => {
+    if (!hasInteracted) {
+      const bgMusic = document.getElementById("bgMusic");
+      bgMusic.play().catch(err => {
+        console.warn("Autoplay blocked until user interacts with page.");
+      });
+      hasInteracted = true;
+    }
+  });
+  document.getElementById("bgMusic").play().catch(() => {});
+
+  // 起始页点击后播放音乐并跳转到 Stage 1
+document.getElementById('startPage').addEventListener('click', () => {
+  const bgMusic = document.getElementById('bgMusic');
+
+  bgMusic.play().catch(() => {
+    alert("Your browser blocked autoplay. Please click again.");
+  });
+
+  document.getElementById('startPage').style.display = 'none';
+  document.getElementById('stage1').classList.add('active');
+
+  // 设置当前 stage 状态为 1
+  current = 1;
+});
+
+  // 起始页点击 → 播放音乐 + 淡出起始页 + 淡入 Stage1
+  document.getElementById('startPage').addEventListener('click', () => {
+    const bgMusic = document.getElementById('bgMusic');
+    const startPage = document.getElementById('startPage');
+    const stage1 = document.getElementById('stage1');
+
+    // 尝试播放音乐
+    bgMusic.play().catch(() => {
+      alert("Your browser blocked autoplay. Please click again.");
+    });
+
+    // 添加渐出效果
+    startPage.classList.add('fade-out');
+
+    // 添加 Stage1 元素 & 动画
+    stage1.classList.add('active');     // 保证它显示
+    stage1.classList.add('fade-in');    // 添加淡入动画
+
+    // 可选：移除 startPage 节点（防止挡住）
+    setTimeout(() => {
+      startPage.style.display = 'none';
+    }, 1000);
+
+    current = 1;  // 设置当前页面状态
+  });
+
+  let weddingMapInstance = null;
+
+function initWeddingMap() {
+  if (weddingMapInstance) {
+    // 已初始化，重新触发尺寸刷新
+    requestAnimationFrame(() => {
+      weddingMapInstance.invalidateSize();
+      weddingMapInstance.setView([40.095389, -88.216862], 16);
+    });
+    return;
+  }
+
+  // 初始化地图
+  weddingMapInstance = L.map('weddingMap', {
+    center: [40.095389, -88.216862],
+    zoom: 16,
+    zoomControl: true,
+    scrollWheelZoom: true
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(weddingMapInstance);
+
+  L.marker([40.095389, -88.216862])
+    .addTo(weddingMapInstance)
+    .bindPopup("Wedding Location: Arboretum Park<br>1008 S Lincoln Ave, Urbana, IL")
+    .openPopup();
+
+  // 多帧刷新：第一次 layout 后刷新尺寸
+  requestAnimationFrame(() => {
+    weddingMapInstance.invalidateSize();
+
+    // 再延迟一点再次刷新尺寸，更保险（某些浏览器下有效）
+    setTimeout(() => {
+      weddingMapInstance.invalidateSize();
+    }, 300);
+  });
+}
+
+
+
+    setTimeout(() => {
+      const map = L.map("weddingMap").setView([40.095389, -88.216862], 16);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(map);
+      L.marker([40.095389, -88.216862])
+        .addTo(map)
+        .bindPopup("Wedding Location: Arboretum Park<br>1008 S Lincoln Ave, Urbana, IL")
+        .openPopup();
+    }, 1000);
+
+function rejectInvitation() {
+  document.getElementById('stage4').classList.remove('active');
+  document.getElementById('stage5').classList.add('active');
+  current = 5;
+}
+
+
+  </script>
+</body>
+</html>
+
