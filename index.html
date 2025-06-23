@@ -604,6 +604,7 @@
     let activeMemoryIndex = null;
     let current = 1;
     const bgMusic = document.getElementById("bgMusic");
+    let stage3bAnimationPlayed = false;
 
     function nextStage() {
       document.getElementById(`stage${current}`).classList.remove('active');
@@ -687,7 +688,6 @@
       window.scrollTo(0, 0); 
     }
 
-
     function skipVideo() {
       video.pause();  // 暂停视频
       continueBtn.style.display = "inline-block";
@@ -695,7 +695,6 @@
       subtitleBox.innerText = "";
     }
 
-    let stage3bAnimationPlayed = false;
     let lastFrameImage = null;
 
     function enterStage3b() {
@@ -1141,18 +1140,19 @@
   if ('ResizeObserver' in window) {
     const canvas = document.getElementById("frameAnimation");
     const observer = new ResizeObserver(() => {
-      const stage3b = document.getElementById("stage3b");
-      if (stage3b.classList.contains("active")) {
-        if (stage3bAnimationPlayed) {
-          currentFrameIndex = totalFrames - 1;
-          setTimeout(() => {
-            resizeCanvas(); 
-            drawCurrentFrame();
-          })
+    const stage3b = document.getElementById("stage3b");
+    if (stage3b.classList.contains("active")) {
+      if (stage3bAnimationPlayed) {
+        //currentFrameIndex = totalFrames - 1;
+        setTimeout(() => {
+          //currentFrameIndex = totalFrames - 1
+          resizeCanvas(); 
+          drawCurrentFrame();
+        })
       } 
         renderRedDots();  // ✅ 尺寸变化且在 Stage3b 时刷新红点位置
-      }
-    });
+    }
+   });
 
     observer.observe(canvas);  // 开始监听 canvas 尺寸
   }
