@@ -67,7 +67,7 @@
       font-family: 'Mona', 'Courier New', monospace;
       text-align: center;
       padding: 100px;
-      font-size: 28px; /* ✅ 正文字体加大 */
+      font-size:  clamp(12px, 2.8vw, 28px); /* ✅ 正文字体加大 */
       letter-spacing: 1.2px;         /* ✅ 增加字母间距 */
       line-height: 1.5; /* ✅ 阅读更舒适 */
 
@@ -237,8 +237,14 @@
     }
 
     .us-map {
-      margin: 20px auto;
-      max-width: 90%;
+      margin: 4vh auto;         /* 上下间距为屏幕高度的4% */
+      max-width: 80vw;          /* 地图不要过大，限制为屏幕宽度80% */
+      text-align: center;       /* 容器中内容居中 */
+      display: flex;
+      justify-content: center;  /* 让内部动画容器也居中 */
+      align-items: center;
+      padding: 0;
+      box-sizing: border-box;
     }
     .us-map img {
       width: 100%;
@@ -281,14 +287,25 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 20px;
-      width: 100%;
+
+      /* 垂直间距：用相对屏幕高度设置（上下各 5vh） */
+      margin: -5vh auto;
+
+      /* 尺寸：宽度 80vw，高度按照原图比例换算 */
+      width: 80vw;
+      height: calc(80vw * 500 / 900); /* 按照原 canvas 900x500 比例 */
+
+      /* 为大屏幕限制最大宽度和高度，防止过大 */
+      max-width: 1000px;
+      max-height: 50vh;
+
+      padding: 0;
       box-sizing: border-box;
-      padding: 0 20px;
     }
 
+
     #frameAnimation {
-      width: 500%;
+      width: 100%;
       max-width: 1000px;
       height: auto;
       display: block;
@@ -316,31 +333,38 @@
       position: absolute;
       background: white;              /* ✅ 白色背景 */
       color: black;                   /* ✅ 黑色字体 */
-      padding: 15px;
+      padding: 1em;
       border-radius: 10px;
-      max-width: 400px;
+      
+      width: 400px;  /*revised max-width: 30vw;
+      min-width: 30vw;*/ 
       z-index: 999;
-      font-family: monospace;
+      font-family: 'Mona', sans-serif;
       text-align: left;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       border: 2px solid #ddd;
       line-height: 1.4;
       font-family: 'Mona', sans-serif;
-      font-size: 16px;
+      font-size: 18px; /*clamp(12px, 1.5vw, 20px);*/
     }
 
     #memoryBox strong {
-      font-size: 30px;          /* ✅ 地点名大一点 */
+      font-size: 1.5vw;          /* ✅ 地点名大一点 */
       font-weight: bold;
     }
 
     #memoryBox em {
-      font-size: 24px;          /* ✅ 时间字体适中 */
+      font-size: 1.5vw;          /* ✅ 时间字体适中 */
       font-style: italic;
     }
 
+    .memory-description {
+      font-size: clamp(14px, 1vw, 22px); /* ✅ 最小14px，屏幕大时2vw，最大22px */
+      line-height: 1.5;
+    }
+
     .content-box {
-      max-width: 1000px;
+      width: 400px;  /*change max-width: 1000px;  fixed the box size*/ 
       margin: 0 auto;
       padding: 60px 40px;
       /*background-color: rgba(0, 0, 0, 0.2); /* 可选：半透明底 */
@@ -363,26 +387,27 @@
       color: white;
       text-align: center;
       font-family: 'Mona', monospace;
-      font-size: 30px;
+
       line-height: 1.8;
-      padding: 40px;
+      padding: 2rem;
       box-sizing: border-box;
+      overflow: auto;              /* 允许滚动 */
     }
 
     #overlayText {
       font-family: 'Mona', monospace;
-      font-size: 26px;
-      margin-bottom: 20px;
+      font-size: clamp(14px, 2vw, 28px);
+      margin-bottom: 1vw;
       white-space: pre-wrap;
     }
 
     #overlayText strong {
-      font-size: 32px;
+      font-size: clamp(22px, 4vw, 48px);
       font-weight: bold;
     }
 
     #overlayText em {
-      font-size: 28px;
+      font-size: clamp(18px, 3vw, 42px);
       font-style: italic;
     }
 
@@ -550,7 +575,7 @@
 
   <div id="memoryBox">
     <img id="memoryImage" src="" alt="Memory Photo" style="width: 100%; border-radius: 8px; margin-bottom: 10px;">
-    <div id="memoryText" style="font-size: 14px;"></div>
+    <div id="memoryText"></div>
   </div>
 
   <svg id="memoryLine" width="100%" height="100%" style="position: absolute; top: 0; left: 0; pointer-events: none; z-index: 998;">
@@ -559,7 +584,7 @@
 
   <div id="memoryOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; font-family: monospace;">
     <img id="overlayImage" src="" style="max-width: 80vw; max-height: 60vh; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 0 20px #fff;">
-    <div id="overlayText" style="font-size: 18px; margin-bottom: 20px;"></div>
+    <div id="overlayText" ></div>
     <button onclick="closeMemoryOverlay()" style="padding: 10px 20px; font-size: 16px; background-color: #e58080; color: white; border: none; cursor: pointer;">Back</button>
   </div>
 
@@ -571,6 +596,11 @@
 
 
   <script>
+    // 全局动画变量
+    let animationFrames = [];
+    let currentFrameIndex = 0;
+    let totalFrames = 57; // 和你动画中用的一样
+    let animationLoaded = 0;
     let activeMemoryIndex = null;
     let current = 1;
     const bgMusic = document.getElementById("bgMusic");
@@ -584,6 +614,8 @@
           weddingMapInstance.invalidateSize();
           weddingMapInstance.setView([40.095389, -88.216862], 16); // 强制定位
         }, 300); // 稍微延迟一点点更保险
+
+        window.scrollTo(0, 0); 
       }
 
       current++;
@@ -646,6 +678,7 @@
         current--;
         document.getElementById(`stage${current}`).classList.add('active');
       }
+      window.scrollTo(0, 0); 
     }
 
 
@@ -657,6 +690,7 @@
     }
 
     let stage3bAnimationPlayed = false;
+    let lastFrameImage = null;
     function enterStage3b() {
       document.getElementById(`stage${current}`).classList.remove('active');
       current++;
@@ -683,6 +717,7 @@
       setTimeout(() => {
         renderRedDots();
       }, 50); // 加一点延迟，等 DOM 完成切换
+      window.scrollTo(0, 0); 
     }
 
 
@@ -702,10 +737,16 @@
       if (!canvas) return;
 
       const ctx = canvas.getContext("2d");
-      const totalFrames = 57;
-      const animationFrames = [];
-      let currentFrameIndex = 0;
-      let animationLoaded = 0;
+
+      // 设置 canvas 尺寸（确保按容器自适应）
+      const container = document.querySelector(".frame-animation-container");
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+
+       // 初始化
+      animationFrames = [];
+      currentFrameIndex = 0;
+      animationLoaded = 0;
 
       // 加载图片
       for (let i = 0; i < totalFrames; i++) {
@@ -713,25 +754,37 @@
         img.src = `frames_extracted/frame_${String(i).padStart(4, '0')}.png`;
         img.onload = () => {
           animationLoaded++;
+          // 全部加载完毕后开始绘制动画
           if (animationLoaded === totalFrames) {
-            requestAnimationFrame(draw);
+            drawNextAnimationFrame();
           }
+        };
+        img.onerror = () => {
+          console.error(`❌ 加载失败: ${img.src}`);
         };
         animationFrames.push(img);
       }
-
-      function draw() {
-        if (currentFrameIndex >= totalFrames) {
-          renderRedDots(); // ✅ 动画完成后添加红点
-          return;
-        }
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(animationFrames[currentFrameIndex], 0, 0, canvas.width, canvas.height);
-        currentFrameIndex +=2;
-        requestAnimationFrame(draw);
-      }
-
     }
+
+    // 绘制当前帧
+    function drawCurrentFrame() {
+      const canvas = document.getElementById("frameAnimation");
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(animationFrames[currentFrameIndex], 0, 0, canvas.width, canvas.height);
+    }
+
+    function drawNextAnimationFrame() {
+      if (currentFrameIndex >= totalFrames) {
+        renderRedDots(); // ✅ 动画完成后添加红点
+        return;
+      }
+      drawCurrentFrame();   // 绘制当前帧
+      currentFrameIndex +=2;
+      requestAnimationFrame(drawNextAnimationFrame);
+    }
+
+    
     function goToStage(target) {
       document.getElementById(`stage3b`).classList.remove('active');
       current = target - 1; // 保证调用 nextStage 后 current = 4
@@ -844,7 +897,7 @@
     document.getElementById("memoryText").innerHTML = `
       <strong>${data.location}</strong><br>
       <em>${data.time}</em><br>
-      <span style="font-size: 22px; display: inline-block; margin-top: 6px;">${data.description}</span>`;
+      <span class="memory-description">${data.description}</span>`;
 
     const canvas = document.getElementById("frameAnimation");
     const canvasRect = canvas.getBoundingClientRect();
@@ -855,18 +908,41 @@
     const y1 = canvasRect.top + (data.dotY / 500) * canvasRect.height;
 
     // 对话框方向及偏移
-    // ✅ 仅对左侧使用更大的偏移值
-    const offsetX = data.side === "left" ? 650 : 400;
-    const offsetY = data.customOffsetY !== undefined ? data.customOffsetY : -80;
 
+    // 当前 canvas 尺寸
+    const canvasWidth = canvasRect.width;
+    const canvasHeight = canvasRect.height;
+    /* changed 
+    // ✅ 仅对左侧使用更大的偏移值
+    // 左侧红点让对话框向左移动45%动画帧宽度，右侧红点向右移动45%
+    const relOffsetX = data.side === "left" ? -0.20 : 0.15;
+    const relOffsetY = data.customOffsetY !== undefined
+      ? data.customOffsetY / 500  // 将你的原始 pixel 偏移换成比例（500是原图高度）
+      : -0.16;                    // 否则默认向上移动0.16倍动画帧高度
+    //const offsetX = data.side === "left" ? 650 : 400;
+    //const offsetY = data.customOffsetY !== undefined ? data.customOffsetY : -80;
+     */
+    
+    
     const container = document.querySelector(".frame-animation-container");
     const containerRect = container.getBoundingClientRect();
 
-    const boxX = (data.side === "left" ? x1 - offsetX : x1 + offsetX) - containerRect.left;
-    const boxY = y1 + offsetY - containerRect.top ;
+    const offsetX =  data.side === "left" ?   20 : 20;   //-containerRect.width 
+    const offsetY = -containerRect.height / 2; 
+    
+    // 计算对话框在屏幕上的坐标
+
+    const boxX = x1 + offsetX;  /*x1 is dotScreenX*/
+    const boxY = y1 + offsetY;
+
+    //const boxX = x1 + relOffsetX * canvasWidth - containerRect.left;  /*x1 is dotScreenX*/
+    //const boxY = y1 + relOffsetY * canvasHeight - containerRect.top;
+    //const boxX = (data.side === "left" ? x1 - offsetX : x1 + offsetX) - containerRect.left;
+    //const boxY = y1 + offsetY - containerRect.top ;
 
     // 显示对话框
     box.style.display = "block";
+    box.style.position = "absolute";  // should already be absolute changed (add)
     box.style.left = `${boxX}px`;
     box.style.top = `${boxY}px`;
 
@@ -874,6 +950,7 @@
     svg.setAttribute("width", window.innerWidth);
     svg.setAttribute("height", window.innerHeight);
 
+/* changed remove the line
     // 红线连接点坐标（在 SVG 坐标系统中）
     const dotOffset = 6;
     const lineX1 = x1 - svgRect.left;
@@ -886,7 +963,7 @@
     line.setAttribute("x2", lineX2);
     line.setAttribute("y2", lineY2);
     line.setAttribute("stroke", "white");
-
+*/
     // 添加对话框上的红点（先移除旧的）
     const oldDot = box.querySelector(".red-dot");
     if (oldDot) oldDot.remove();
@@ -976,6 +1053,58 @@
   function closeMemoryOverlay() {
     document.getElementById("memoryOverlay").style.display = "none";
   }
+
+  // ✅ 在这里添加监听器
+  const memoryOverlay = document.getElementById('memoryOverlay');
+
+  // 点击 Overlay 时关闭
+  memoryOverlay.addEventListener('click', closeMemoryOverlay);
+
+  // 点击文字或图片时阻止关闭
+  document.getElementById('overlayText').addEventListener('click', (e) => e.stopPropagation());
+  document.getElementById('overlayImage').addEventListener('click', (e) => e.stopPropagation());
+
+  function resizeCanvas() {
+    const canvas = document.getElementById('frameAnimation');
+    const container = document.querySelector('.frame-animation-container');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+
+    // 这里重新渲染动画帧，如果你有动画序列的话
+    if (animationFrames.length > 0 && currentFrameIndex >= totalFrames) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // 重画最后一帧
+      ctx.drawImage(
+        animationFrames[totalFrames - 1],
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+    }
+  }
+
+  // 页面载入和窗口调整时更新
+  window.addEventListener('load', resizeCanvas);
+  window.addEventListener('resize', resizeCanvas);
+
+  function drawCurrentFrame() {
+    const canvas = document.getElementById('frameAnimation');
+    const ctx = canvas.getContext('2d');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (animationFrames[currentFrameIndex]) {
+      ctx.drawImage(
+        animationFrames[currentFrameIndex],
+        0, 0, canvas.width, canvas.height
+      );
+    }
+  } 
+
+
+
   // ✅ 页面加载时，确保 overlay 都是隐藏的（Live Server 刷新缓存问题）
   window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("memoryOverlay").style.display = "none";
@@ -1033,6 +1162,7 @@ document.getElementById('startPage').addEventListener('click', () => {
   document.getElementById('stage1').classList.add('active');
 
   // 设置当前 stage 状态为 1
+  window.scrollTo(0, 0);  
   current = 1;
 });
 
@@ -1063,6 +1193,8 @@ document.getElementById('startPage').addEventListener('click', () => {
   });
 
   let weddingMapInstance = null;
+
+  
 
 function initWeddingMap() {
   if (weddingMapInstance) {
@@ -1102,8 +1234,6 @@ function initWeddingMap() {
   });
 }
 
-
-
     setTimeout(() => {
       const map = L.map("weddingMap").setView([40.095389, -88.216862], 16);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -1121,8 +1251,6 @@ function rejectInvitation() {
   current = 5;
 }
 
-
   </script>
 </body>
 </html>
-
