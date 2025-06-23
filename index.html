@@ -614,8 +614,6 @@
           weddingMapInstance.invalidateSize();
           weddingMapInstance.setView([40.095389, -88.216862], 16); // 强制定位
         }, 300); // 稍微延迟一点点更保险
-
-        window.scrollTo(0, 0); 
       }
 
       current++;
@@ -637,6 +635,7 @@
       }
 
       document.getElementById(`stage${current}`).classList.add('active');
+      window.scrollTo(0, 0); 
     }
 
     const video = document.getElementById("missionVideo");
