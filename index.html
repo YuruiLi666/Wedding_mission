@@ -524,7 +524,7 @@
 <div class="stage" id="stage3b">
   <h2>Stage 2: Travel, Laugh, and Grow Together</h2>
   <p>They also traveled to many different places and created countless unforgettable memories together.</p>
-  <p>(Click the page to see the map and click the red dots on the map to discover what they experienced!)</p>
+  <p>(Click the red dots on the map to discover what they experienced!)</p>
   <div class="us-map">
   <!-- 帧动画显示区域 -->
     <div class="frame-animation-container">
@@ -708,6 +708,7 @@
         stage3bAnimationPlayed = true;
       } else {
         // ✅ 已经播放过动画，重新渲染红点
+        currentFrameIndex = totalFrames - 1;
         setTimeout(() => {
           resizeCanvas(); 
           drawCurrentFrame();
@@ -724,6 +725,7 @@
 
       // ✅ 回到 Stage 3b 时重新渲染红点位置
       setTimeout(() => {
+        currentFrameIndex = totalFrames - 1;
         resizeCanvas(); 
         drawCurrentFrame();
         renderRedDots();
@@ -1141,6 +1143,13 @@
     const observer = new ResizeObserver(() => {
       const stage3b = document.getElementById("stage3b");
       if (stage3b.classList.contains("active")) {
+        if (stage3bAnimationPlayed) {
+          currentFrameIndex = totalFrames - 1;
+          setTimeout(() => {
+            resizeCanvas(); 
+            drawCurrentFrame();
+          })
+      } 
         renderRedDots();  // ✅ 尺寸变化且在 Stage3b 时刷新红点位置
       }
     });
