@@ -672,6 +672,13 @@
         document.getElementById('stage4').classList.remove('active');
         document.getElementById('stage3b').classList.add('active');
         current = 3;
+        currentFrameIndex = totalFrames - 1;
+        setTimeout(() => {
+          resizeCanvas(); 
+          drawCurrentFrame();
+          renderRedDots();
+        }, 100); // 加一点延迟，等 DOM 完成切换
+        window.scrollTo(0, 0); 
       } else if (current > 1) {
         document.getElementById(`stage${current}`).classList.remove('active');
         current--;
@@ -690,6 +697,7 @@
 
     let stage3bAnimationPlayed = false;
     let lastFrameImage = null;
+
     function enterStage3b() {
       document.getElementById(`stage${current}`).classList.remove('active');
       current++;
@@ -701,6 +709,8 @@
       } else {
         // ✅ 已经播放过动画，重新渲染红点
         setTimeout(() => {
+          resizeCanvas(); 
+          drawCurrentFrame();
           renderRedDots(); // 给它一点延迟确保 canvas 渲染完成
         }, 100);
       }
@@ -714,8 +724,10 @@
 
       // ✅ 回到 Stage 3b 时重新渲染红点位置
       setTimeout(() => {
+        resizeCanvas(); 
+        drawCurrentFrame();
         renderRedDots();
-      }, 50); // 加一点延迟，等 DOM 完成切换
+      }, 100); // 加一点延迟，等 DOM 完成切换
       window.scrollTo(0, 0); 
     }
 
